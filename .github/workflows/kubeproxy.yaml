@@ -25,10 +25,4 @@ jobs:
           # Use curl to fetch the web page content and pipe it to grep to find the relevant section.
           kube_proxy_version=$(curl -s "$url" | grep "1.27" | grep -Eom 1 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+')
 
-        # if [ -n "$content" ]; then
-         #   kube_proxy_version=$(echo "$content" | jq -sRr '@text')
-         # else
-         #   kube_proxy_version="Version not found"
-         # fi */
-
           echo "Kube-Proxy Version: $kube_proxy_version"
