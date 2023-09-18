@@ -24,7 +24,7 @@ jobs:
           echo "URL is $url"
 
           # Use curl to fetch the web page content and pipe it to grep to find the relevant section.
-          content=$(curl -s "$url" | grep "1.27" | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+' | head -n 1)
+          content=$(curl -s "$url" | grep "1.27" | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+')
           echo "Content is $content"
 
           kube_proxy_version=$(echo $content | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+' | head -n 1)
