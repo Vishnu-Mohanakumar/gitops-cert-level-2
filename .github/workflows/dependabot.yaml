@@ -20,7 +20,7 @@ jobs:
       - name: Update components.json
         run: |
           latest_version="${{ steps.get-karpenter-version.outputs.version }}"
-          jq '.karpenter = $latest_version' components.json > updated.json
+          jq '.karpenter: $latest_version' components.json > updated.json
           mv updated.json components.json
 
       - name: Commit changes
