@@ -21,14 +21,14 @@ jobs:
         run: |
           # Replace this URL with the actual AWS EKS documentation URL for kube-proxy version.
           url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
-          echo $url
+          echo "URL is $url"
 
           # Use curl to fetch the web page content and pipe it to grep to find the relevant section.
-          content=$(curl -s "$url" | grep "1.27" | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+' | head -n 1)
-          echo "$content"
+          content=$(curl -s "$url" | grep "1.27")
+          echo "Content is $content"
 
           if [ -n "$content" ]; then
-            kube_proxy_version=$(echo $content)
+            kube_proxy_version=$(echo $content | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+' | head -n 1)
           else
             kube_proxy_version="Version not found"
           fi
