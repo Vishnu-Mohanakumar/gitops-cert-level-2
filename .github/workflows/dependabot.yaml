@@ -46,6 +46,6 @@ jobs:
               repo: context.repo.repo,
               title: "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}",
               body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}.",
-              base: main,
-              head: "PR",
+              base: 'main',
+              head: 'PR',
             });
