@@ -36,16 +36,15 @@ jobs:
         with:
           github-token: ${{ secrets.DEPENDA }}
           script: |
-            const { data: repo } = await github.rest.repos.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            
+            const baseBranch = 'main';  // Replace with your base branch name
+            const headBranch = 'PR';  // Replace with your feature branch name
+            console.log(`Creating pull request from ${headBranch} to ${baseBranch}`);
             await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}",
               body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}.",
-              base: 'main',
-              head: 'PR',
+              base: baseBranch,
+              head: headBranch,
             });
+
