@@ -1,4 +1,4 @@
 {
-  "karpenter": "v0.22.0",
-  "kube_proxy": "1.26.3-minimal-eksbuild.2"
+  "karpenter": "v0.30.0",
+  "kube_proxy": "v1.27.4-minimal-eksbuild.2"
 }
