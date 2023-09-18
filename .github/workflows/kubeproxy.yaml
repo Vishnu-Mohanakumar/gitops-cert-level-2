@@ -1,0 +1,42 @@
+name: Get Kube-Proxy Version
+
+on:
+  workflow_dispatch:  # This triggers the workflow manually
+
+jobs:
+  get-kube-proxy-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          pip install requests beautifulsoup4
+        working-directory: ${{ github.workspace }}
+
+      - name: Get Kube-Proxy Version
+        run: |
+          # Replace this URL with the actual AWS EKS documentation URL for kube-proxy version.
+          url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
+          version=$(python - <<END
+import requests
+from bs4 import BeautifulSoup
+
+url = "$url"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+# Modify this selector to match the HTML structure of the documentation page.
+kube_proxy_version = soup.select_one("Your-Selector").text.strip()
+print(kube_proxy_version)
+END
+)
+          echo "Kube-Proxy Version: $version"
+          # Now you can use the extracted version for further actions, such as updating a file or creating a release.
+
+      - name: Use Kube-Proxy Version
+        run: |
+          # Replace this with the action you want to perform using the extracted version.
+          # For example, you can update a file with the kube-proxy version.
+          echo "kube-proxy_version: $version" > kube-proxy-version.yml
