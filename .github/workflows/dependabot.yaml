@@ -1,0 +1,33 @@
+name: Update Components
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily
+
+jobs:
+  update-components:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get latest Karpenter release version
+        id: get-karpenter-version
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/aws/karpenter/releases/latest | jq -r '.tag_name')
+          echo "::set-output name=version::$latest_release"
+
+      - name: Update components.json
+        run: |
+          latest_version="${{ steps.get-karpenter-version.outputs.version }}"
+          jq '.karpenter = $latest_version' components.json > updated.json
+          mv updated.json components.json
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add components.json
+          git commit -m "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}"
+          git push
