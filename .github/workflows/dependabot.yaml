@@ -23,22 +23,30 @@ jobs:
           jq --arg latest_version "$latest_version" '.karpenter = $latest_version' components.json > updated.json
           mv updated.json components.json
 
-#      - name: Commit changes
- #       run: |
- #         git config --global user.email "actions@github.com"
- #         git config --global user.name "GitHub Actions"
- #         git add components.json
- #         git commit -m "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}"
- #         git push
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add components.json
+          git commit -m "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}"
+          git push
 
       - name: Create Pull Request
-        uses: octokit/request-action@v2.x
+        uses: actions/github-script@v5
         with:
-          route: POST /repos/${{ github.repository }}/pulls
-          method: POST
-          title: "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}"
-          body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}."
-          draft: false
-          labels: "dependencies"
+          script: |
+            const { data: repo } = await github.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            
+            await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}",
+              body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}.",
+              base: repo.default_branch,  // Specify the base branch here
+              head: "PR",   // Specify your feature branch name here
+            });
         env:
           GITHUB_TOKEN: ${{ secrets.DEPENDA }}
