@@ -29,7 +29,7 @@ jobs:
           Karp_version="${{ steps.get-karpenter-version.outputs.version }}"
           kube_version="${{ steps.get-kube-version.outputs.version }}"
           jq --arg Karp_version "$Karp_version" '.karpenter = $Karp_version' components.json > updated.json
-          jq --arg kube_version "$kube_version" '.karpenter = $kube_version' updated.json > updated_1.json
+          jq --arg kube_version "$kube_version" '.kube_proxy = $kube_version' updated.json > updated_1.json
           
           mv updated_1.json components.json
 
