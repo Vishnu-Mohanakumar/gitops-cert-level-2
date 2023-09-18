@@ -1,8 +1,7 @@
 name: Update Components
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Run daily
+  workflow_dispatch: # Run daily
 
 jobs:
   update-components:
