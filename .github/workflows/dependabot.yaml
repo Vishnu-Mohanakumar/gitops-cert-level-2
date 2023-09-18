@@ -40,3 +40,5 @@ jobs:
           body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}."
           draft: false
           labels: "dependencies"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
