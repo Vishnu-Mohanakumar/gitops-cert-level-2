@@ -58,22 +58,3 @@ jobs:
               base: baseBranch,
               head: headBranch,
             });
-            
-      - name: Get Kube-Proxy Version
-        id: get-version
-        run: |
-          # Use curl to fetch the AWS EKS documentation page
-          documentation_url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
-          documentation_content=$(curl -s "$documentation_url")
-
-          # Use grep to extract the kube-proxy version
-          kube_proxy_version=$(echo "$documentation_content" | grep -oE 'kube-proxy minimal version\s*([0-9]+\.[0-9]+\.[0-9]+)')
-
-          if [ -z "$kube_proxy_version" ]; then
-            echo "Failed to retrieve kube-proxy version."
-            exit 1
-          fi
-
-          # Output the version as an action output
-          echo "::set-output name=version::$kube_proxy_version"
-
