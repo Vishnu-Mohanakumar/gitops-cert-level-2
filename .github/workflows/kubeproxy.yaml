@@ -11,37 +11,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x  # Choose an appropriate Python version
-
       - name: Install Dependencies
         run: |
-          pip install requests beautifulsoup4
-        working-directory: ${{ github.workspace }}
+          apt-get update
+          apt-get install -y curl jq
+        shell: bash
 
       - name: Extract Kube-Proxy Version
         run: |
           # Replace this URL with the actual AWS EKS documentation URL for kube-proxy version.
           url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
-          kube_proxy_version=$(python - <<END
-import requests
-from bs4 import BeautifulSoup
 
-url = "$url"
-response = requests.get(url)
-soup = BeautifulSoup(response.text, "html.parser")
+          # Use curl to fetch the web page content and pipe it to grep to find the relevant section.
+          content=$(curl -s "$url" | grep -A 5 "Kubernetes 1.27" | sed -n '2p;5p' | awk '{print $1}')
 
-# Find the section of the documentation that mentions the Kubernetes version.
-# Replace "Kubernetes 1.27" with the specific version you are looking for.
-kubernetes_version_section = soup.find("h2", string="Kubernetes 1.27")
-if kubernetes_version_section:
-    kube_proxy_version = kubernetes_version_section.find_next("p").text.strip()
-else:
-    kube_proxy_version = "Version not found"
+          if [ -n "$content" ]; then
+            kube_proxy_version=$(echo "$content" | jq -sRr '@text')
+          else
+            kube_proxy_version="Version not found"
+          fi
 
-print(kube_proxy_version)
-END
-)
           echo "Kube-Proxy Version: $kube_proxy_version"
