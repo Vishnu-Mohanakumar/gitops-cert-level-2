@@ -34,19 +34,18 @@ jobs:
       - name: Create Pull Request
         uses: actions/github-script@v5
         with:
+          github-token: ${{ secrets.DEPENDA }}
           script: |
-            const { data: repo } = await github.repos.get({
+            const { data: repo } = await github.rest.repos.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
             
-            await github.pulls.create({
+            await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Update Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}",
               body: "This PR updates the Karpenter version to ${{ steps.get-karpenter-version.outputs.version }}.",
-              base: repo.default_branch,  // Specify the base branch here
-              head: "PR",   // Specify your feature branch name here
+              base: repo.data.default_branch,
+              head: "your-branch-name",
             });
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPENDA }}
