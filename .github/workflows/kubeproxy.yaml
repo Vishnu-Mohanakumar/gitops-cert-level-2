@@ -21,9 +21,10 @@ jobs:
         run: |
           # Replace this URL with the actual AWS EKS documentation URL for kube-proxy version.
           url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
+          echo "$url"
 
           # Use curl to fetch the web page content and pipe it to grep to find the relevant section.
-          content=$(curl -s "$url" | grep "1.27" | grep -Eom 1 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+')
+          content=$(curl -s "$url" | grep "1.27" | grep -Eo 'v\d+\.\d+\.\d+-minimal-eksbuild\.\d+' | head -n 1)
           echo "$content"
 
           if [ -n "$content" ]; then
