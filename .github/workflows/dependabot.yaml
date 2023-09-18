@@ -17,11 +17,21 @@ jobs:
           latest_release=$(curl -s https://api.github.com/repos/aws/karpenter/releases/latest | jq -r '.tag_name')
           echo "::set-output name=version::$latest_release"
 
+      - name: Extract Kube-Proxy Version
+        id: get-kube-version
+        run: |
+          url="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html"
+          kube_proxy_version=$(curl -s "$url" | grep "1.27" | sed -nE 's/.*(v[0-9]+\.[0-9]+\.[0-9]+-minimal-eksbuild\.[0-9]+).*/\1/p' | head -n 1)
+          echo "::set-output name=version::$kube_proxy_version"
+
       - name: Update components.json
         run: |
-          latest_version="${{ steps.get-karpenter-version.outputs.version }}"
-          jq --arg latest_version "$latest_version" '.karpenter = $latest_version' components.json > updated.json
-          mv updated.json components.json
+          Karp_version="${{ steps.get-karpenter-version.outputs.version }}"
+          kube_version="${{ steps.get-kube-version.outputs.version }}"
+          jq --arg Karp_version "$Karp_version" '.karpenter = $Karp_version' components.json > updated.json
+          jq --arg kube_version "$kube_version" '.karpenter = $kube_version' updated.json > updated_1.json
+          
+          mv updated_1.json components.json
 
       - name: Commit changes
         run: |
