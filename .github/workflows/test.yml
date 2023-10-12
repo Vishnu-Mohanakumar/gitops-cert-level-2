@@ -43,3 +43,12 @@ jobs:
         run: |
           echo "${{needs.mirror.result}}"
           echo "2nd job ran success"
+
+  Test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: echoing
+        run: |
+          echo "${{needs.build.result}}"
+          echo "3nd job ran success"
