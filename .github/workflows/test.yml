@@ -33,6 +33,7 @@ jobs:
         run: |
           echo "successfully done"
           echo "${{contains(needs.check.outputs.matrix, 'components.json')}}"
+          echo "${{contains(github.event.pull_request.changed_files, 'components.json')}}"
           
   build:
     runs-on: ubuntu-latest
