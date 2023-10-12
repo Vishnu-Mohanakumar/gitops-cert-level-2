@@ -15,7 +15,7 @@ jobs:
       - name: count files
         run: |
           echo "${{github.event.pull_request.changed_files}}"
-          echo "${{ contains(github.event.pull_request.changed_files, './components.json') }}"
+          echo "${{ contains(github.event.pull_request.changed_files, '^components.json$') }}"
           echo "1st job ran success"
 
   build:
