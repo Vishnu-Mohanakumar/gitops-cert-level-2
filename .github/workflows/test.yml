@@ -27,7 +27,7 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     needs: check
-#    if: ${{contains(needs.check.outputs.matrix, 'components.json')}}
+    if: ${{contains(needs.check.outputs.matrix, 'components.json')}}
     steps:
       - name: checks file exist
         run: |
