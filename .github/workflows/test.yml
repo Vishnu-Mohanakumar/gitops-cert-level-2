@@ -8,6 +8,8 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
 #    if: contains(github.event.pull_request.changed_files, 'components.json')
     steps:
       - name: Checkout
@@ -25,12 +27,12 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     needs: check
-#    if: contains(needs.check.steps.changed-files.outputs.all_changed_files, 'components.json')
+#    if: contains(needs.check.outputs.matrix, 'components.json')
     steps:
       - name: checks file exist
         run: |
           echo "successfully done"
-          echo "$contains(needs.check.steps.changed-files.outputs.all_changed_files, 'components.json')"
+          echo "$contains(needs.check.outputs.matrix, 'components.json')"
           
   build:
     runs-on: ubuntu-latest
