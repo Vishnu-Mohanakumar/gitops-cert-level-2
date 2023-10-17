@@ -24,7 +24,7 @@ jobs:
             echo "$file was changed"
           done
 
-  mirror:
+  check_for_mirror:
     runs-on: ubuntu-latest
     needs: check
     if: ${{contains(needs.check.outputs.list, 'components.json')}}
@@ -34,19 +34,17 @@ jobs:
           echo "successfully done"
           echo "${{contains(needs.check.outputs.matrix, 'components.json')}}"
           
-  build:
-    runs-on: ubuntu-latest
-    needs: mirror
+  mirror:
+    needs: check_for_mirror
     if : ${{ !failure() }}
-    steps:
-      - name: echoing
-        run: |
-          echo "${{needs.mirror.result}}"
-          echo "2nd job ran success"
+    uses: ./.github/workflows/mirror.yml
+    with:
+      environment: uat
 
   Test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: mirror
+    if : ${{ !failure() }}
     steps:
       - name: echoing
         run: |
