@@ -1,0 +1,27 @@
+name: "Mirror Images"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to mirror images to'
+        type: environment
+        required: true
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to mirror images to'
+        type: string
+        required: true
+
+jobs:
+  image:
+    name: "Mirror Images"
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: echoing
+        run: |
+          echo "${{needs.mirror.result}}"
+          echo "2nd job ran success"
+          echo "environment: ${{ inputs.environment }}"
