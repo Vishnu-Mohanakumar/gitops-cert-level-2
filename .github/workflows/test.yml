@@ -37,7 +37,7 @@ jobs:
   build:
     needs: mirror
     if : ${{ !failure() }}
-    uses: ./.github/workflows/mirror-image.yml
+    uses: ./.github/workflows/mirror.yml
     with:
       environment: uat
 
