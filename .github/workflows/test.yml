@@ -35,14 +35,11 @@ jobs:
           echo "${{contains(needs.check.outputs.matrix, 'components.json')}}"
           
   build:
-    runs-on: ubuntu-latest
     needs: mirror
     if : ${{ !failure() }}
-    steps:
-      - name: echoing
-        run: |
-          echo "${{needs.mirror.result}}"
-          echo "2nd job ran success"
+    uses: ./.github/workflows/mirror-image.yml
+    with:
+      environment: uat
 
   Test:
     runs-on: ubuntu-latest
